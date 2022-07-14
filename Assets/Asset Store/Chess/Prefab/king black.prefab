@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4087213197106850}
   - component: {fileID: 33897457938783466}
   - component: {fileID: 23986310822093114}
+  - component: {fileID: -6233273208472863349}
+  - component: {fileID: -6467747034075651320}
   m_Layer: 0
   m_Name: king black
   m_TagString: Piece
@@ -83,3 +85,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-6233273208472863349
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822731811085762}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 2.106178, y: 4.911368, z: 2.053372}
+  m_Center: {x: -0.0023435354, y: 2.459512, z: 0.05086732}
+--- !u!114 &-6467747034075651320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1822731811085762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17dd6c3b6c533934987193025ec9772f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

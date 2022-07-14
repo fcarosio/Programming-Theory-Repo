@@ -4,6 +4,18 @@ using UnityEngine;
 
 public class Board : MonoBehaviour
 {
+    public class Position
+    {
+        public int Column { get; set; }
+        public int Row { get; set; }
+
+        public Position(int column, int row)
+        {
+            Column = column;
+            Row = row;
+        }
+    }
+
     [Header("White Team")]
     [SerializeField] GameObject whiteKing;
     [SerializeField] GameObject whiteQueen;
@@ -26,6 +38,8 @@ public class Board : MonoBehaviour
     public static float FORWARD = 0.0f;
     public static float REVERSE = 180.0f;
 
+    public Piece[,] pieces = new Piece[N_CELLS, N_CELLS];
+
     // Start is called before the first frame update
     void Start()
     {
@@ -39,6 +53,14 @@ public class Board : MonoBehaviour
 
     public void ResetBoard()
     {
+        for (int i = 0; i < N_CELLS; ++i)
+        {
+            for (int j = 0; j < N_CELLS; ++j)
+            {
+                pieces[i, j] = null;
+            }
+        }
+
         foreach (GameObject piece in GameObject.FindGameObjectsWithTag("Piece"))
         {
             Destroy(piece);
@@ -46,6 +68,17 @@ public class Board : MonoBehaviour
 
         AddWhiteTeam();
         AddBlackTeam();
+    }
+
+    public bool IsCellValidAndFree(Board.Position position)
+    {
+        return IsAllowed(position.Column) && IsAllowed(position.Row)
+            && pieces[position.Column, position.Row] == null;
+    }
+
+    private bool IsAllowed(int pos)
+    {
+        return pos >= 0 && pos < N_CELLS;
     }
 
     void AddWhiteTeam()
@@ -75,20 +108,43 @@ public class Board : MonoBehaviour
         }
     }
 
-    void AddPiece(GameObject piece, int col, int row, float angle)
+    void AddPiece(GameObject pieceObj, int col, int row, float angle)
     {
-        Vector3 position = ToPosition(col, row);
+        Vector3 position = ToCoords(col, row);
         Quaternion rotation = Quaternion.Euler(0, angle, 0);
-        Instantiate(piece, position, rotation);
+        Instantiate(pieceObj, position, rotation);
+
+        Piece piece = pieceObj.GetComponent<Piece>();
+        pieces[col, row] = piece;
     }
 
     static float ToCoord(int pos)
     {
-        return (pos - (N_CELLS * 0.5f - 0.5f)) * STEP;
+        return (pos - ((float)(N_CELLS - 1)) * 0.5f) * STEP;
     }
 
-    public static Vector3 ToPosition(int col, int row)
+    static int ToPosition(float coord)
+    {
+        return Mathf.RoundToInt(coord / STEP + (N_CELLS - 1) * 0.5f);
+    }
+
+    public static Vector3 ToCoords(int col, int row)
     {
         return new Vector3(ToCoord(col), BOARD_Y, ToCoord(row));
+    }
+
+    public static Vector3 ToCoords(Position position)
+    {
+        return ToCoords(position.Column, position.Row);
+    }
+
+    public static Position ToPosition(float x, float y, float z)
+    {
+        return new Position(ToPosition(x), ToPosition(z));
+    }
+
+    public static Position ToPosition(Vector3 position)
+    {
+        return ToPosition(position.x, position.y, position.z);
     }
 }

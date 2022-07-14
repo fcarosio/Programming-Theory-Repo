@@ -72,7 +72,13 @@ public class PlayerSettings : MonoBehaviour
 
     public string GetName()
     {
-        return playerName.text;
+        string name = playerName.text;
+        if (string.IsNullOrEmpty(name))
+        {
+            int num = ((int)playerColor) + 1;
+            name = string.Format("Player {0}", num);
+        }
+        return name;
     }
 
     public PlayerColor GetColor()

@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 33054363953613402}
   - component: {fileID: 23103005850730350}
   - component: {fileID: -5919598075467524386}
+  - component: {fileID: -9057422891040276847}
   m_Layer: 0
   m_Name: pawn black
   m_TagString: Piece
@@ -98,3 +99,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   color: 1
   moveOffset: -1
+--- !u!65 &-9057422891040276847
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1555947633139444}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.9498557, y: 2.8404446, z: 1.900969}
+  m_Center: {x: 0.00868994, y: 1.4240718, z: 0.023277551}

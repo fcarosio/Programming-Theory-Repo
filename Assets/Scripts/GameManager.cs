@@ -53,13 +53,6 @@ public class GameManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        board = GameObject.Find("Board").GetComponent<Board>();
-        board.ResetBoard();
-
-        currentPlayer = players[0];
-
-        CameraController cameraCtrl = Camera.main.GetComponent<CameraController>();
-        cameraCtrl.SetViewFor(currentPlayer);
     }
 
     // Update is called once per frame
@@ -74,7 +67,30 @@ public class GameManager : MonoBehaviour
         players[index] = playerData;
     }
 
+    private void TurnTo(PlayerData player)
+    {
+        currentPlayer = player;
+
+        CameraController cameraCtrl = Camera.main.GetComponent<CameraController>();
+        cameraCtrl.SetViewFor(currentPlayer);
+    }
+
+    public PlayerData GetCurrentPlayer()
+    {
+        return currentPlayer;
+    }
+
     public void StartGame()
     {
+        board = GameObject.Find("Game Board").GetComponent<Board>();
+        board.ResetBoard();
+
+        TurnTo(players[0]);
+    }
+
+    public void NextTurn()
+    {
+        int newIndex = ((int)currentPlayer.GetColor() + 1) % PlayerSettings.NUM_COLORS;
+        TurnTo(players[newIndex]);
     }
 }

@@ -11,7 +11,8 @@ GameObject:
   - component: {fileID: 4300806698655444}
   - component: {fileID: 33017829115479750}
   - component: {fileID: 23471427938731296}
-  - component: {fileID: 1636282953385638522}
+  - component: {fileID: 420312968780874504}
+  - component: {fileID: 6964885504580587404}
   m_Layer: 0
   m_Name: bishop black
   m_TagString: Piece
@@ -84,7 +85,20 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &1636282953385638522
+--- !u!65 &420312968780874504
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1916680518618882}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.9498559, y: 3.7877054, z: 1.900969}
+  m_Center: {x: -0.016804278, y: 1.8938477, z: 0.07090187}
+--- !u!114 &6964885504580587404
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -93,6 +107,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 1916680518618882}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b50658b8889c60541b8dec91717f273c, type: 3}
+  m_Script: {fileID: 11500000, guid: d47e2d4e376fe1d41a98e10c785f46cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

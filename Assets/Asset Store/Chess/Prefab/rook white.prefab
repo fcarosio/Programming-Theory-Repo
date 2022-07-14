@@ -11,6 +11,8 @@ GameObject:
   - component: {fileID: 4894417914186506}
   - component: {fileID: 33785817432066812}
   - component: {fileID: 23056748769021182}
+  - component: {fileID: -7943955447753909846}
+  - component: {fileID: -1196766912661638110}
   m_Layer: 0
   m_Name: rook white
   m_TagString: Piece
@@ -83,3 +85,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!65 &-7943955447753909846
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037745782791696}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.9498558, y: 3.1691847, z: 1.9009689}
+  m_Center: {x: 0, y: 1.5874147, z: 0.049515545}
+--- !u!114 &-1196766912661638110
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1037745782791696}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9a55c0b42c17fd049b92a3885cc173e5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
