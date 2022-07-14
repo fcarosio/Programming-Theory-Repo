@@ -46,11 +46,6 @@ public class Board : MonoBehaviour
         ResetBoard();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void ResetBoard()
     {
         for (int i = 0; i < N_CELLS; ++i)
@@ -74,6 +69,13 @@ public class Board : MonoBehaviour
     {
         return IsAllowed(position.Column) && IsAllowed(position.Row)
             && pieces[position.Column, position.Row] == null;
+    }
+
+    public void MovePiece(Position from, Position to)
+    {
+        Piece p = pieces[from.Column, from.Row];
+        pieces[from.Column, from.Row] = null;
+        pieces[to.Column, to.Row] = p;
     }
 
     private bool IsAllowed(int pos)

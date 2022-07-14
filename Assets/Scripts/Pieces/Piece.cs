@@ -10,13 +10,9 @@ public class Piece : MonoBehaviour
     protected Board board;
 
     // Start is called before the first frame update
-    void Start()
+    protected virtual void Start()
     {
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
+        Place();
     }
 
     public PlayerSettings.PlayerColor GetColor()
@@ -43,6 +39,8 @@ public class Piece : MonoBehaviour
 
         if (isAllowed)
         {
+            board.MovePiece(position, targetPosition);
+
             position.Column = targetPosition.Column;
             position.Row = targetPosition.Row;
             gameObject.transform.position = Board.ToCoords(position);
@@ -58,5 +56,27 @@ public class Piece : MonoBehaviour
     public virtual List<Board.Position> GetAllowedMovements()
     {
         return null;
+    }
+
+    protected void CheckDirection(int colOffset, int rowOffset, List<Board.Position> positions)
+    {
+        int c = position.Column + colOffset;
+        int r = position.Row + rowOffset;
+
+        while (c >= 0 && c < Board.N_CELLS && r >= 0 && r < Board.N_CELLS)
+        {
+            Board.Position targetPosition = new Board.Position(c, r);
+            if (board.IsCellValidAndFree(targetPosition))
+            {
+                positions.Add(targetPosition);
+            }
+            else
+            {
+                break;
+            }
+
+            c += colOffset;
+            r += rowOffset;
+        }
     }
 }

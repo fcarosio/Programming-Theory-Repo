@@ -8,15 +8,10 @@ public class PiecePawn : Piece
     private bool firstMove = true;
 
     // Start is called before the first frame update
-    void Start()
+    protected override void Start()
     {
-        Place();
+        base.Start();
         moveOffset *= 2;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
     }
 
     public override string GetName()

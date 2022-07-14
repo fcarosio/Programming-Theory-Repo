@@ -74,6 +74,7 @@ public class GameUI : MonoBehaviour
         gameMng.NextTurn();
 
         playerScreen.ShowPlayer(gameMng.GetCurrentPlayer());
+        playerScreen.ShowPiece(null);
     }
 
     void Highlight(List<Board.Position> positions)
