@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Piece
   - Cell Indicator
+  - Eat Indicator
+  - Captured
   layers:
   - Default
   - TransparentFX

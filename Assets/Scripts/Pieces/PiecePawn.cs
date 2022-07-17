@@ -37,6 +37,19 @@ public class PiecePawn : Piece
         return allowedPositions;
     }
 
+    public override List<Board.Position> GetEatable()
+    {
+        List<Board.Position> eatable = new List<Board.Position>();
+
+        int direction = moveOffset >= 0 ? 1 : -1;
+        Board.Position targetPosition = new Board.Position(position.Column - 1, position.Row + direction);
+        CheckEatable(targetPosition, eatable);
+        targetPosition = new Board.Position(position.Column + 1, position.Row + direction);
+        CheckEatable(targetPosition, eatable);
+
+        return eatable;
+    }
+
     public override bool MoveTo(Board.Position targetPosition)
     {
         bool isAllowed = base.MoveTo(targetPosition);

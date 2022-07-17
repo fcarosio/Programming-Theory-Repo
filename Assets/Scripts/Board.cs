@@ -71,6 +71,22 @@ public class Board : MonoBehaviour
             && pieces[position.Column, position.Row] == null;
     }
 
+    public bool IsCellValidAndBusy(Board.Position position)
+    {
+        return IsAllowed(position.Column) && IsAllowed(position.Row)
+            && pieces[position.Column, position.Row] != null;
+    }
+
+    public Piece GetAt(Board.Position position)
+    {
+        if (IsCellValidAndBusy(position))
+        {
+            return pieces[position.Column, position.Row];
+        }
+
+        return null;
+    }
+
     public void MovePiece(Position from, Position to)
     {
         Piece p = pieces[from.Column, from.Row];

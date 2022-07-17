@@ -31,6 +31,15 @@ public class Piece : MonoBehaviour
         position = Board.ToPosition(gameObject.transform.position);
     }
 
+    void MovePiece(Board.Position targetPosition)
+    {
+        board.MovePiece(position, targetPosition);
+
+        position.Column = targetPosition.Column;
+        position.Row = targetPosition.Row;
+        gameObject.transform.position = Board.ToCoords(position);
+    }
+
     public virtual bool MoveTo(Board.Position targetPosition)
     {
         List<Board.Position> availablePositions = GetAllowedMovements();
@@ -39,13 +48,35 @@ public class Piece : MonoBehaviour
 
         if (isAllowed)
         {
-            board.MovePiece(position, targetPosition);
-
-            position.Column = targetPosition.Column;
-            position.Row = targetPosition.Row;
-            gameObject.transform.position = Board.ToCoords(position);
+            MovePiece(targetPosition);
         }
         return isAllowed;
+    }
+
+    void Capture(Piece piece)
+    {
+        piece.gameObject.transform.Translate(Vector3.up * -10.0f);
+        piece.gameObject.SetActive(false);
+        piece.gameObject.tag = "Captured";
+    }
+
+    public bool Eat(Piece piece)
+    {
+        List<Board.Position> eatable = GetEatable();
+
+        bool isEatable = board.IsCellValidAndBusy(piece.GetPosition())
+            && eatable.Find(p => p.Column == piece.GetPosition().Column && p.Row == piece.GetPosition().Row) != null;
+        
+        if (isEatable && piece.GetColor() != this.GetColor())
+        {
+            Capture(piece);
+
+            MovePiece(piece.GetPosition());
+
+            return true;
+        }
+
+        return false;
     }
 
     public virtual string GetName()
@@ -55,7 +86,24 @@ public class Piece : MonoBehaviour
 
     public virtual List<Board.Position> GetAllowedMovements()
     {
-        return null;
+        return new List<Board.Position>();
+    }
+
+    protected void CheckEatable(Board.Position targetPosition, List<Board.Position> positions)
+    {
+        GameManager gameMng = GameManager.Instance;
+        GameManager.PlayerData playerData = gameMng.GetCurrentPlayer();
+
+        Piece piece = board.GetAt(targetPosition);
+        if (piece != null && piece.GetColor() == PlayerSettings.GetOther(playerData.GetColor()))
+        {
+            positions.Add(targetPosition);
+        }
+    }
+
+    public virtual List<Board.Position> GetEatable()
+    {
+        return new List<Board.Position>();
     }
 
     protected void CheckDirection(int colOffset, int rowOffset, List<Board.Position> positions)

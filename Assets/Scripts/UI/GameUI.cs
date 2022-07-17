@@ -8,6 +8,7 @@ public class GameUI : MonoBehaviour
     [SerializeField] GameObject gameScreen;
     [SerializeField] GameObject pieceSelector;
     [SerializeField] GameObject cellIndicator;
+    [SerializeField] GameObject eatIndicator;
 
     private Piece selectedPiece = null;
 
@@ -34,16 +35,41 @@ public class GameUI : MonoBehaviour
     {
         if (Input.GetMouseButtonDown(0))
         {
+            GameManager gameMng = GameManager.Instance;
             GameObject obj = GetSelected();
-            if (obj != null && IsPiece(obj))
+
+            if (obj != null)
             {
-                SelectPiece(obj);
-            }
-            if (obj != null && IsCellIndicator(obj) && selectedPiece != null)
-            {
-                MoveSelectedPiece(obj);
+                if (IsPiece(obj))
+                {
+                    Piece piece = obj.GetComponent<Piece>();
+
+                    if (piece.GetColor() == gameMng.GetCurrentPlayer().GetColor())
+                    {
+                        SelectPiece(obj);
+                    }
+                    else if (selectedPiece != null && IsEatable(piece))
+                    {
+                        EatPiece(piece);
+                    }
+                }
+                else if (IsCellIndicator(obj))
+                {
+                    if (selectedPiece != null)
+                    {
+                        MoveSelectedPiece(obj);
+                    }
+                }
             }
         }
+    }
+
+    bool IsEatable(Piece piece)
+    {
+        Board.Position position = piece.GetPosition();
+        List<Board.Position> eatables = selectedPiece.GetEatable();
+
+        return eatables.Find(p => p.Column == position.Column && p.Row == position.Row) != null;
     }
 
     void SelectPiece(GameObject pieceObj)
@@ -58,17 +84,19 @@ public class GameUI : MonoBehaviour
             Vector3 piecePosition = Board.ToCoords(piece.GetPosition());
             pieceSelector.transform.position = piecePosition;
 
-            LightOff();
+            HideMovements();
             List<Board.Position> positions = selectedPiece.GetAllowedMovements();
-            Highlight(positions);
+            ShowMovements(positions);
+
+            HideEatables();
+            List<Board.Position> eatables = selectedPiece.GetEatable();
+            ShowEatables(eatables);
         }
     }
 
-    void MoveSelectedPiece(GameObject targetPosition)
+    void NextTurn()
     {
-        selectedPiece.MoveTo(Board.ToPosition(targetPosition.transform.position));
-        LightOff();
-
+        selectedPiece = null;
         pieceSelector.SetActive(false);
         GameManager gameMng = GameManager.Instance;
         gameMng.NextTurn();
@@ -77,17 +105,54 @@ public class GameUI : MonoBehaviour
         playerScreen.ShowPiece(null);
     }
 
-    void Highlight(List<Board.Position> positions)
+    void MoveSelectedPiece(GameObject targetPosition)
+    {
+        selectedPiece.MoveTo(Board.ToPosition(targetPosition.transform.position));
+        HideMovements();
+
+        NextTurn();
+    }
+
+    void EatPiece(Piece piece)
+    {
+        selectedPiece.Eat(piece);
+        HideEatables();
+        HideMovements();
+
+        NextTurn();
+    }
+
+    void ShowMovements(List<Board.Position> positions)
+    {
+        Show(cellIndicator, positions);
+    }
+
+    void ShowEatables(List<Board.Position> positions)
+    {
+        Show(eatIndicator, positions);
+    }
+
+    void Show(GameObject prefab, List<Board.Position> positions)
     {
         foreach (Board.Position position in positions)
         {
-            Instantiate(cellIndicator, Board.ToCoords(position), Quaternion.identity);
+            Instantiate(prefab, Board.ToCoords(position), Quaternion.identity);
         }
     }
 
-    void LightOff()
+    void HideMovements()
     {
-        foreach (GameObject obj in GameObject.FindGameObjectsWithTag("Cell Indicator"))
+        Hide("Cell Indicator");
+    }
+
+    void HideEatables()
+    {
+        Hide("Eat Indicator");
+    }
+
+    void Hide(string tag)
+    {
+        foreach (GameObject obj in GameObject.FindGameObjectsWithTag(tag))
         {
             Destroy(obj);
         }

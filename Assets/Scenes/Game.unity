@@ -1498,6 +1498,7 @@ MonoBehaviour:
   gameScreen: {fileID: 1137554215}
   pieceSelector: {fileID: 853489483}
   cellIndicator: {fileID: 2204947522960591782, guid: c9455a8eeb31d764d9b437a215e5d925, type: 3}
+  eatIndicator: {fileID: 6688599334399515065, guid: 994b91dd837d2094ead7b0b3738c362d, type: 3}
 --- !u!1 &2022171165
 GameObject:
   m_ObjectHideFlags: 0
