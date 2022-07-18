@@ -15,32 +15,58 @@ public class PieceKing : Piece
         return "King";
     }
 
-    void CheckNext(int colOffset, int rowOffset, List<Board.Position> positions)
+    void ScanNext(int colOffset, int rowOffset, List<Board.Position> movable, List<Board.Position> eatable)
     {
         int c = position.Column + colOffset;
         int r = position.Row + rowOffset;
+        PlayerSettings.PlayerColor oppositeColor = PlayerSettings.GetOther(GameManager.Instance.CurrentPlayer.Color);
 
         Board.Position targetPosition = new Board.Position(c, r);
-        if (board.IsCellValidAndFree(targetPosition))
+        if (board.IsFree(targetPosition))
         {
-            positions.Add(targetPosition);
+            movable.Add(targetPosition);
+        }
+        else if (board.IsBusy(targetPosition))
+        {
+            if (board.GetAt(targetPosition).GetColor() == oppositeColor)
+            {
+                eatable.Add(targetPosition);
+            }
         }
     }
 
     public override List<Board.Position> GetAllowedMovements()
     {
         List<Board.Position> allowedPositions = new List<Board.Position>();
+        List<Board.Position> dummy = new List<Board.Position>();
 
-        CheckNext(-1, 1, allowedPositions);
-        CheckNext(0, 1, allowedPositions);
-        CheckNext(1, 1, allowedPositions);
-        CheckNext(1, 0, allowedPositions);
-        CheckNext(1, -1, allowedPositions);
-        CheckNext(0, -1, allowedPositions);
-        CheckNext(-1, -1, allowedPositions);
-        CheckNext(-1, 0, allowedPositions);
+        ScanNext(-1, 1, allowedPositions, dummy);
+        ScanNext(0, 1, allowedPositions, dummy);
+        ScanNext(1, 1, allowedPositions, dummy);
+        ScanNext(1, 0, allowedPositions, dummy);
+        ScanNext(1, -1, allowedPositions, dummy);
+        ScanNext(0, -1, allowedPositions, dummy);
+        ScanNext(-1, -1, allowedPositions, dummy);
+        ScanNext(-1, 0, allowedPositions, dummy);
 
         return allowedPositions;
+    }
+
+    public override List<Board.Position> GetEatable()
+    {
+        List<Board.Position> dummy = new List<Board.Position>();
+        List<Board.Position> eatable = new List<Board.Position>();
+
+        ScanNext(-1, 1, dummy, eatable);
+        ScanNext(0, 1, dummy, eatable);
+        ScanNext(1, 1, dummy, eatable);
+        ScanNext(1, 0, dummy, eatable);
+        ScanNext(1, -1, dummy, eatable);
+        ScanNext(0, -1, dummy, eatable);
+        ScanNext(-1, -1, dummy, eatable);
+        ScanNext(-1, 0, dummy, eatable);
+
+        return eatable;
     }
 
     public override bool MoveTo(Board.Position targetPosition)

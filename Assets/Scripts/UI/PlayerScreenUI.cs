@@ -26,7 +26,7 @@ public class PlayerScreenUI : MonoBehaviour
     public void ShowPlayer(GameManager.PlayerData playerData)
     {
         playerName.text = playerData.GetName();
-        playerColor.color = PLAYER_COLORS[(int)(playerData.GetColor())];
+        playerColor.color = PLAYER_COLORS[(int)(playerData.Color)];
     }
 
     public void ShowPiece(Piece piece)

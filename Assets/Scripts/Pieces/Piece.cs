@@ -43,7 +43,7 @@ public class Piece : MonoBehaviour
     public virtual bool MoveTo(Board.Position targetPosition)
     {
         List<Board.Position> availablePositions = GetAllowedMovements();
-        bool isAllowed = board.IsCellValidAndFree(targetPosition)
+        bool isAllowed = board.IsFree(targetPosition)
             && availablePositions.Find(p => p.Column == targetPosition.Column && p.Row == targetPosition.Row) != null;
 
         if (isAllowed)
@@ -64,7 +64,7 @@ public class Piece : MonoBehaviour
     {
         List<Board.Position> eatable = GetEatable();
 
-        bool isEatable = board.IsCellValidAndBusy(piece.GetPosition())
+        bool isEatable = board.IsBusy(piece.GetPosition())
             && eatable.Find(p => p.Column == piece.GetPosition().Column && p.Row == piece.GetPosition().Row) != null;
         
         if (isEatable && piece.GetColor() != this.GetColor())
@@ -92,10 +92,10 @@ public class Piece : MonoBehaviour
     protected void CheckEatable(Board.Position targetPosition, List<Board.Position> positions)
     {
         GameManager gameMng = GameManager.Instance;
-        GameManager.PlayerData playerData = gameMng.GetCurrentPlayer();
+        GameManager.PlayerData playerData = gameMng.CurrentPlayer;
 
         Piece piece = board.GetAt(targetPosition);
-        if (piece != null && piece.GetColor() == PlayerSettings.GetOther(playerData.GetColor()))
+        if (piece != null && piece.GetColor() == PlayerSettings.GetOther(playerData.Color))
         {
             positions.Add(targetPosition);
         }
@@ -106,20 +106,26 @@ public class Piece : MonoBehaviour
         return new List<Board.Position>();
     }
 
-    protected void CheckDirection(int colOffset, int rowOffset, List<Board.Position> positions)
+    protected void ScanDirection(int colOffset, int rowOffset, List<Board.Position> movable, List<Board.Position> eatable)
     {
         int c = position.Column + colOffset;
         int r = position.Row + rowOffset;
+        PlayerSettings.PlayerColor oppositeColor = PlayerSettings.GetOther(GameManager.Instance.CurrentPlayer.Color);
 
         while (c >= 0 && c < Board.N_CELLS && r >= 0 && r < Board.N_CELLS)
         {
             Board.Position targetPosition = new Board.Position(c, r);
-            if (board.IsCellValidAndFree(targetPosition))
+
+            if (board.IsFree(targetPosition))
             {
-                positions.Add(targetPosition);
+                movable.Add(targetPosition);
             }
-            else
+            else if (board.IsBusy(targetPosition))
             {
+                if (board.GetAt(targetPosition).GetColor() == oppositeColor)
+                {
+                    eatable.Add(targetPosition);
+                }
                 break;
             }
 
@@ -127,4 +133,45 @@ public class Piece : MonoBehaviour
             r += rowOffset;
         }
     }
+
+    //protected void CheckMoveDirection(int colOffset, int rowOffset, List<Board.Position> positions)
+    //{
+    //    int c = position.Column + colOffset;
+    //    int r = position.Row + rowOffset;
+    //
+    //    while (c >= 0 && c < Board.N_CELLS && r >= 0 && r < Board.N_CELLS)
+    //    {
+    //        Board.Position targetPosition = new Board.Position(c, r);
+    //        if (board.IsFree(targetPosition))
+    //        {
+    //            positions.Add(targetPosition);
+    //        }
+    //        else
+    //        {
+    //            break;
+    //        }
+    //
+    //        c += colOffset;
+    //        r += rowOffset;
+    //    }
+    //}
+
+    //protected virtual void CheckEatDirection(int colOffset, int rowOffset, List<Board.Position> positions)
+    //{
+    //    int c = position.Column + colOffset;
+    //    int r = position.Row + rowOffset;
+    //
+    //    while (c >= 0 && c < Board.N_CELLS && r >= 0 && r < Board.N_CELLS)
+    //    {
+    //        Board.Position targetPosition = new Board.Position(c, r);
+    //        if (board.IsBusy(targetPosition))
+    //        {
+    //            positions.Add(targetPosition);
+    //            break;
+    //        }
+    //
+    //        c += colOffset;
+    //        r += rowOffset;
+    //    }
+    //}
 }

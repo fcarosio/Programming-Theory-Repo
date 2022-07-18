@@ -5,19 +5,22 @@ using UnityEngine;
 public class GameUI : MonoBehaviour
 {
     [SerializeField] PlayerScreenUI playerScreen;
-    [SerializeField] GameObject gameScreen;
+    [SerializeField] GameScreenUI gameScreen;
     [SerializeField] GameObject pieceSelector;
     [SerializeField] GameObject cellIndicator;
     [SerializeField] GameObject eatIndicator;
 
     private Piece selectedPiece = null;
+    private int totalTime = 0;
+    private int partialTime = 0;
 
     // Start is called before the first frame update
     void Start()
     {
         GameManager gameMng = GameManager.Instance;
         gameMng.StartGame();
-        playerScreen.ShowPlayer(gameMng.GetCurrentPlayer());
+        playerScreen.ShowPlayer(gameMng.CurrentPlayer);
+        StartCoroutine(GameTimer());
     }
 
     bool IsPiece(GameObject obj)
@@ -44,7 +47,7 @@ public class GameUI : MonoBehaviour
                 {
                     Piece piece = obj.GetComponent<Piece>();
 
-                    if (piece.GetColor() == gameMng.GetCurrentPlayer().GetColor())
+                    if (piece.GetColor() == gameMng.CurrentPlayer.Color)
                     {
                         SelectPiece(obj);
                     }
@@ -75,7 +78,7 @@ public class GameUI : MonoBehaviour
     void SelectPiece(GameObject pieceObj)
     {
         Piece piece = pieceObj.GetComponent<Piece>();
-        if (piece.GetColor() == GameManager.Instance.GetCurrentPlayer().GetColor())
+        if (piece.GetColor() == GameManager.Instance.CurrentPlayer.Color)
         {
             selectedPiece = piece;
             playerScreen.ShowPiece(selectedPiece);
@@ -96,13 +99,42 @@ public class GameUI : MonoBehaviour
 
     void NextTurn()
     {
+        GameManager gameMng = GameManager.Instance;
+        GameManager.PlayerData playerData = gameMng.CurrentPlayer;
+
         selectedPiece = null;
         pieceSelector.SetActive(false);
-        GameManager gameMng = GameManager.Instance;
-        gameMng.NextTurn();
 
-        playerScreen.ShowPlayer(gameMng.GetCurrentPlayer());
-        playerScreen.ShowPiece(null);
+        if (Win(playerData))
+        {
+            gameMng.GameOver();
+        }
+        else
+        {
+            playerData.TimeCount = partialTime;
+            gameMng.NextTurn();
+            playerData = gameMng.CurrentPlayer;
+            partialTime = playerData.TimeCount;
+
+            playerScreen.ShowPlayer(gameMng.CurrentPlayer);
+            playerScreen.ShowPiece(null);
+        }
+    }
+
+    bool Win(GameManager.PlayerData player)
+    {
+        int count = 0;
+        GameObject[] pieceObjs = GameObject.FindGameObjectsWithTag("Piece");
+        foreach (GameObject pieceObj in pieceObjs)
+        {
+            Piece piece = pieceObj.GetComponent<Piece>();
+            if (piece.GetColor() == PlayerSettings.GetOther(player.Color))
+            {
+                ++count;
+            }
+        }
+
+        return count == 0;
     }
 
     void MoveSelectedPiece(GameObject targetPosition)
@@ -172,5 +204,20 @@ public class GameUI : MonoBehaviour
         }
 
         return null;
+    }
+
+    IEnumerator GameTimer()
+    {
+        GameManager gameMng = GameManager.Instance;
+
+        while (gameMng.GameActive)
+        {
+            yield return new WaitForSeconds(1.0f);
+
+            ++partialTime;
+            ++totalTime;
+
+            gameScreen.SetTime(partialTime, totalTime);
+        }
     }
 }

@@ -30,7 +30,7 @@ public class CameraController : MonoBehaviour
 
     public void SetViewFor(GameManager.PlayerData playerData)
     {
-        int colorIndex = (int)playerData.GetColor();
+        int colorIndex = (int)playerData.Color;
         focalPoint.transform.rotation = Quaternion.Euler(0.0f, playerAngle[colorIndex], 0.0f);
     }
 }

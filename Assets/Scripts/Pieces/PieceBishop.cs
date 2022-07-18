@@ -18,13 +18,27 @@ public class PieceBishop : Piece
     public override List<Board.Position> GetAllowedMovements()
     {
         List<Board.Position> allowedPositions = new List<Board.Position>();
+        List<Board.Position> dummy = new List<Board.Position>();
 
-        CheckDirection(-1, 1, allowedPositions);
-        CheckDirection(1, 1, allowedPositions);
-        CheckDirection(1, -1, allowedPositions);
-        CheckDirection(-1, -1, allowedPositions);
+        ScanDirection(-1, 1, allowedPositions, dummy);
+        ScanDirection(1, 1, allowedPositions, dummy);
+        ScanDirection(1, -1, allowedPositions, dummy);
+        ScanDirection(-1, -1, allowedPositions, dummy);
 
         return allowedPositions;
+    }
+
+    public override List<Board.Position> GetEatable()
+    {
+        List<Board.Position> dummy = new List<Board.Position>();
+        List<Board.Position> eatable = new List<Board.Position>();
+
+        ScanDirection(-1, 1, dummy, eatable);
+        ScanDirection(1, 1, dummy, eatable);
+        ScanDirection(1, -1, dummy, eatable);
+        ScanDirection(-1, -1, dummy, eatable);
+
+        return eatable;
     }
 
     public override bool MoveTo(Board.Position targetPosition)

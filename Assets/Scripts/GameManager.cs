@@ -7,22 +7,19 @@ public class GameManager : MonoBehaviour
     public class PlayerData
     {
         private string name;
-        private PlayerSettings.PlayerColor color;
+        public PlayerSettings.PlayerColor Color { get; private set; }
+        public int TimeCount { get; set; }
 
         public PlayerData(string name, PlayerSettings.PlayerColor color)
         {
             this.name = name;
-            this.color = color;
+            Color = color;
+            TimeCount = 0;
         }
 
         public string GetName()
         {
             return name;
-        }
-
-        public PlayerSettings.PlayerColor GetColor()
-        {
-            return color;
         }
     }
 
@@ -33,8 +30,10 @@ public class GameManager : MonoBehaviour
         get { return instance; }
     }
 
+    public bool GameActive { get; private set; }
+    public PlayerData CurrentPlayer { get; private set; }
+
     private Board board;
-    private PlayerData currentPlayer;
 
     private PlayerData[] players = new PlayerData[PlayerSettings.NUM_COLORS];
 
@@ -55,29 +54,19 @@ public class GameManager : MonoBehaviour
     {
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-    }
-
     public void AddPlayer(string name, PlayerSettings.PlayerColor color)
     {
         PlayerData playerData = new PlayerData(name, color);
-        int index = (int)playerData.GetColor();
+        int index = (int)playerData.Color;
         players[index] = playerData;
     }
 
     private void TurnTo(PlayerData player)
     {
-        currentPlayer = player;
+        CurrentPlayer = player;
 
         CameraController cameraCtrl = Camera.main.GetComponent<CameraController>();
-        cameraCtrl.SetViewFor(currentPlayer);
-    }
-
-    public PlayerData GetCurrentPlayer()
-    {
-        return currentPlayer;
+        cameraCtrl.SetViewFor(CurrentPlayer);
     }
 
     public void StartGame()
@@ -85,12 +74,19 @@ public class GameManager : MonoBehaviour
         board = GameObject.Find("Game Board").GetComponent<Board>();
         board.ResetBoard();
 
+        GameActive = true;
+
         TurnTo(players[0]);
+    }
+
+    public void GameOver()
+    {
+        Debug.Log(CurrentPlayer.GetName() + " wins!");
     }
 
     public void NextTurn()
     {
-        int newIndex = ((int)currentPlayer.GetColor() + 1) % PlayerSettings.NUM_COLORS;
+        int newIndex = ((int)CurrentPlayer.Color + 1) % PlayerSettings.NUM_COLORS;
         TurnTo(players[newIndex]);
     }
 }

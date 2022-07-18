@@ -65,26 +65,34 @@ public class Board : MonoBehaviour
         AddBlackTeam();
     }
 
-    public bool IsCellValidAndFree(Board.Position position)
+    private bool IsAllowed(int pos)
     {
-        return IsAllowed(position.Column) && IsAllowed(position.Row)
-            && pieces[position.Column, position.Row] == null;
+        return pos >= 0 && pos < N_CELLS;
     }
 
-    public bool IsCellValidAndBusy(Board.Position position)
+    private bool IsAllowed(Board.Position position)
     {
-        return IsAllowed(position.Column) && IsAllowed(position.Row)
-            && pieces[position.Column, position.Row] != null;
+        return IsAllowed(position.Column) && IsAllowed(position.Row);
+    }
+
+    public bool IsFree(Board.Position position)
+    {
+        return IsAllowed(position) && pieces[position.Column, position.Row] == null;
+    }
+
+    public bool IsBusy(Board.Position position)
+    {
+        return IsAllowed(position) && pieces[position.Column, position.Row] != null;
+    }
+
+    public bool IsBusy(Board.Position position, PlayerSettings.PlayerColor color)
+    {
+        return IsBusy(position) ? GetAt(position).GetColor() == color : false;
     }
 
     public Piece GetAt(Board.Position position)
     {
-        if (IsCellValidAndBusy(position))
-        {
-            return pieces[position.Column, position.Row];
-        }
-
-        return null;
+        return IsAllowed(position) ? pieces[position.Column, position.Row] : null;
     }
 
     public void MovePiece(Position from, Position to)
@@ -92,11 +100,6 @@ public class Board : MonoBehaviour
         Piece p = pieces[from.Column, from.Row];
         pieces[from.Column, from.Row] = null;
         pieces[to.Column, to.Row] = p;
-    }
-
-    private bool IsAllowed(int pos)
-    {
-        return pos >= 0 && pos < N_CELLS;
     }
 
     void AddWhiteTeam()
