@@ -81,7 +81,7 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log(CurrentPlayer.GetName() + " wins!");
+        GameActive = false;
     }
 
     public void NextTurn()

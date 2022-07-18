@@ -6,6 +6,7 @@ public class GameUI : MonoBehaviour
 {
     [SerializeField] PlayerScreenUI playerScreen;
     [SerializeField] GameScreenUI gameScreen;
+    [SerializeField] GameOverScreenUI gameOverScreen;
     [SerializeField] GameObject pieceSelector;
     [SerializeField] GameObject cellIndicator;
     [SerializeField] GameObject eatIndicator;
@@ -108,6 +109,7 @@ public class GameUI : MonoBehaviour
         if (Win(playerData))
         {
             gameMng.GameOver();
+            gameOverScreen.SetWinner(playerData);
         }
         else
         {
@@ -123,18 +125,19 @@ public class GameUI : MonoBehaviour
 
     bool Win(GameManager.PlayerData player)
     {
-        int count = 0;
+        bool hasKing = false;
+
         GameObject[] pieceObjs = GameObject.FindGameObjectsWithTag("Piece");
         foreach (GameObject pieceObj in pieceObjs)
         {
             Piece piece = pieceObj.GetComponent<Piece>();
-            if (piece.GetColor() == PlayerSettings.GetOther(player.Color))
+            if (piece.GetColor() == PlayerSettings.GetOther(player.Color) && piece.GetName() == "King")
             {
-                ++count;
+                hasKing = true;
             }
         }
 
-        return count == 0;
+        return !hasKing;
     }
 
     void MoveSelectedPiece(GameObject targetPosition)
